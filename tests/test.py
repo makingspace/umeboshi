@@ -2,9 +2,10 @@ import logging
 
 from django.test import TestCase
 from django.utils import timezone
-from ticker.routines import Routine
+
 from ticker import exceptions, scheduled
 from ticker.models import Event, TriggerBehavior
+from ticker.routines import Routine
 
 
 class BaseRoutine(Routine):
