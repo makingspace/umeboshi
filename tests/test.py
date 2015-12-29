@@ -3,9 +3,9 @@ import logging
 from django.test import TestCase
 from django.utils import timezone
 
-from ticker import exceptions, scheduled
-from ticker.models import Event, TriggerBehavior
-from ticker.routines import Routine
+from umeboshi import exceptions, scheduled
+from umeboshi.models import Event, TriggerBehavior
+from umeboshi.routines import Routine
 
 
 class BaseRoutine(Routine):
@@ -68,7 +68,7 @@ class ModelTests(TestCase):
 
         welcome_path = "{}.{}".format(SimpleRoutine.__module__, SimpleRoutine.__name__)
         trigger_settings = {TRIGGER_SIMPLE: welcome_path}
-        with self.settings(TICKER_TRIGGERS=trigger_settings):
+        with self.settings(UMEBOSHI_TRIGGERS=trigger_settings):
             event = SimpleRoutine.schedule()
 
             self.assertEqual(event.trigger_name, TRIGGER_SIMPLE)
@@ -79,7 +79,7 @@ class ModelTests(TestCase):
 
         welcome_path = "{}.{}".format(SimpleRoutine.__module__, SimpleRoutine.__name__)
         trigger_settings = {TRIGGER_SIMPLE: welcome_path}
-        with self.settings(TICKER_TRIGGERS=trigger_settings):
+        with self.settings(UMEBOSHI_TRIGGERS=trigger_settings):
             data = ['World', 5, timezone.now().date()]
             event = SimpleRoutine.schedule(args=data)
 
@@ -95,7 +95,7 @@ class ModelTests(TestCase):
 
         welcome_path = "{}.{}".format(SendOnceRoutine.__module__, SendOnceRoutine.__name__)
         trigger_settings = {TRIGGER_RUN_ONCE: welcome_path}
-        with self.settings(TICKER_TRIGGERS=trigger_settings):
+        with self.settings(UMEBOSHI_TRIGGERS=trigger_settings):
             data = ['unique_data']
             # First event
             event = SendOnceRoutine.schedule(args=data)
@@ -110,7 +110,7 @@ class ModelTests(TestCase):
 
         welcome_path = "{}.{}".format(TriggerOnceRoutine.__module__, TriggerOnceRoutine.__name__)
         trigger_settings = {SCHEDULE_ONCE: welcome_path}
-        with self.settings(TICKER_TRIGGERS=trigger_settings):
+        with self.settings(UMEBOSHI_TRIGGERS=trigger_settings):
             data = ['unique_data']
             # First event
             event = TriggerOnceRoutine.schedule(args=data)
@@ -133,7 +133,7 @@ class ModelTests(TestCase):
 
         welcome_path = "{}.{}".format(RunAndScheduleOnceRoutine.__module__, RunAndScheduleOnceRoutine.__name__)
         trigger_settings = {RUN_AND_SCHEDULE_ONCE: welcome_path}
-        with self.settings(TICKER_TRIGGERS=trigger_settings):
+        with self.settings(UMEBOSHI_TRIGGERS=trigger_settings):
             data = ['unique_data']
             # First event
             event = RunAndScheduleOnceRoutine.schedule(args=data)
@@ -155,7 +155,7 @@ class ModelTests(TestCase):
 
         welcome_path = "{}.{}".format(TriggerDeleteAfterRoutine.__module__, TriggerDeleteAfterRoutine.__name__)
         trigger_settings = {TRIGGER_DELETE_AFTER_PROCESSING: welcome_path}
-        with self.settings(TICKER_TRIGGERS=trigger_settings):
+        with self.settings(UMEBOSHI_TRIGGERS=trigger_settings):
             data = ['unique_data']
             # First event
             event = TriggerDeleteAfterRoutine.schedule(args=data)

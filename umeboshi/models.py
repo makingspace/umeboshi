@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-django-ticker.models
+django-umeboshi.models
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Ticker uses the Event model to repesent a single instance of deferred
+Umeboshi uses the Event model to repesent a single instance of deferred
 computation. It is represented as a reference to a specific class defined
 in the application (a Routine), combined with the arguments passed to that
 Routine's `_run` function and the details of its scheduling. This includes,
@@ -22,7 +22,7 @@ from django_enumfield import enum
 from django_extensions.db import fields
 from model_utils.managers import QueryManager
 
-from ticker.exceptions import RoutineRunException, RoutineRetryException, UnknownTriggerException
+from umeboshi.exceptions import RoutineRunException, RoutineRetryException, UnknownTriggerException
 
 
 class BaseModel(models.Model):
@@ -56,13 +56,13 @@ class EventManager(QueryManager):
 class Event(BaseModel):
 
     """
-    Events are the way that Ticker Routines are scheduled to be run. An Event
+    Events are the way that Umeboshi Routines are scheduled to be run. An Event
     object is saved to the database with the `trigger_name` of the Routine, as
     well as the pickled arguments to the Routine and the scheduling details.
     """
 
     class Meta:
-        app_label = 'ticker'
+        app_label = 'umeboshi'
         index_together = (
             ('datetime_processed', 'datetime_scheduled'),
             ('data_hash', 'datetime_processed', 'trigger_name')
@@ -70,7 +70,7 @@ class Event(BaseModel):
 
     uuid = fields.ShortUUIDField(unique=True, editable=False)
     objects = EventManager()
-    # The trigger name corresponds to the name given a Ticker Routine with the
+    # The trigger name corresponds to the name given a Umeboshi Routine with the
     # `scheduled` decorator in the application logic.
     trigger_name = models.CharField(db_index=True, max_length=50)
     task_group = models.CharField(db_index=True, max_length=256, null=True)
@@ -117,7 +117,7 @@ class Event(BaseModel):
     @staticmethod
     def hash_data(data):
         """
-        Ticker calculates an md5 hash of argument data.
+        Umeboshi calculates an md5 hash of argument data.
         """
         return hashlib.md5(data).hexdigest()
 
@@ -184,7 +184,7 @@ class Event(BaseModel):
         The `scheduled` decorator registers all imported Routine classes. The
         class is then retrieved when the event is ready for processing.
         """
-        from ticker.scheduled import register
+        from umeboshi.scheduled import register
         if self.trigger_name in register:
             return import_string(register[self.trigger_name])
 
@@ -213,7 +213,7 @@ class Event(BaseModel):
         super(Event, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return 'Ticker Event #{}'.format(self.pk)
+        return 'Umeboshi Event #{}'.format(self.pk)
 
 
 class TriggerBehavior(enum.Enum):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-django-ticker.exceptions
+django-umeboshi.exceptions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains all exceptions used by the Django Ticker module
+This module contains all exceptions used by the Django Umeboshi module
 """
 
 

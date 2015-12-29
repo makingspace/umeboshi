@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ticker', '0002_event_task_group'),
+        ('umeboshi', '0002_event_task_group'),
     ]
 
     operations = [

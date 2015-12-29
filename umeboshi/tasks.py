@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-    django-ticker.tasks
+    django-umeboshi.tasks
     ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Tasks to run asynchronously via Celery
 """
 
-from ticker.models import Event
+from umeboshi.models import Event
 from django.utils import timezone
 from celery.task import task
 from django.core.cache import cache
@@ -15,7 +15,7 @@ from django.core.cache import cache
 @task(ignore_result=True, soft_time_limit=300)
 def process_event(event_id):
 
-    with cache.lock('ticker-event-{0}'.format(event_id), expire=15):
+    with cache.lock('umeboshi-event-{0}'.format(event_id), expire=15):
         # Load event
         event = Event.objects.get(pk=event_id)
 

@@ -3,8 +3,8 @@ import logging
 
 from django.utils import timezone
 
-from ticker.exceptions import RoutineRunException, DuplicateEvent
-from ticker.models import Event, TriggerBehavior
+from umeboshi.exceptions import RoutineRunException, DuplicateEvent
+from umeboshi.models import Event, TriggerBehavior
 
 
 class Routine(object):
@@ -89,5 +89,5 @@ class Routine(object):
         try:
             return self._run()
         except Exception as e:
-            logging.getLogger('django-ticker').exception(e)
+            logging.getLogger('django-umeboshi').exception(e)
             raise RoutineRunException()

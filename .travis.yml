@@ -20,7 +20,7 @@ install:
   - pip install coveralls mock factory_boy
 
 script:
-  - coverage run --source=ticker runtests.py
+  - coverage run --source=umeboshi runtests.py
 
 after_success:
   coveralls

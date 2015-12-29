@@ -39,12 +39,12 @@ class RunTests(Command):
     def finalize_options(self):
         pass
 setup(
-    name="ticker",
+    name="django-umeboshi",
     version="0.1",
     author="MakeSpace Labs, Inc.",
     author_email="zach.smith@makespace.com",
-    description="Ticker is a Django application for durable long-term scheduling of arbitrary actions.",
-    url="https://github.com/makingspace/ticker",
+    description="Umeboshi is a Django application for durable long-term scheduling of arbitrary actions.",
+    url="https://github.com/makingspace/umeboshi",
     license="Revised BSD",
     packages=find_packages(),
     install_requires=[

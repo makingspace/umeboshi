@@ -1,7 +1,7 @@
 # Make a couple frequently used things available right here.
-from ticker.models import Event, TriggerBehavior
-from ticker.routines import Routine
-from ticker.scheduled import scheduled
+from umeboshi.models import Event, TriggerBehavior
+from umeboshi.routines import Routine
+from umeboshi.scheduled import scheduled
 
 __all__ = ('trigger', 'Event', 'Routine', 'scheduled', 'TriggerBehavior')
 
