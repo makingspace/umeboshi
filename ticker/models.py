@@ -197,6 +197,7 @@ class Event(BaseModel):
             return Event.objects.create(
                 trigger_name=self.trigger_name,
                 datetime_scheduled=new_datetime,
+                status=Event.Status.CREATED,
                 args=self.args
             )
 

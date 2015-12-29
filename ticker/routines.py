@@ -73,6 +73,7 @@ class Routine(object):
         event = Event.objects.create(trigger_name=cls.trigger_name,
                                      task_group=cls.task_group,
                                      datetime_scheduled=datetime_scheduled,
+                                     status=Event.Status.CREATED,
                                      args=args)
         return event
 
