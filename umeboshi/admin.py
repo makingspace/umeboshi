@@ -48,6 +48,6 @@ class EventAdmin(admin.ModelAdmin):
                    ('status', 'datetime_created', 'datetime_scheduled', 'datetime_processed')}))
 
     def _args(self, obj):
-        return ', '.join(a for a in obj.args)
+        return ', '.join(str(a) for a in obj.args)
 
 admin.site.register(Event, EventAdmin)
