@@ -74,7 +74,7 @@ class Event(BaseModel):
     # `scheduled` decorator in the application logic.
     trigger_name = models.CharField(db_index=True, max_length=50)
     task_group = models.CharField(db_index=True, max_length=256, null=True)
-    data_pickled = models.TextField(blank=True, editable=False)
+    data_pickled = models.BinaryField(blank=True, editable=False)
     data_hash = models.CharField(db_index=True, max_length=32)
     datetime_created = models.DateTimeField(null=True, auto_now_add=True)
     datetime_scheduled = models.DateTimeField(db_index=True)
