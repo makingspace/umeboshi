@@ -1,5 +1,5 @@
 from django.contrib import admin
-from umeboshi import Event
+from umeboshi.models import Event
 
 
 def link_to_field(field_name, short_description=None, getter=None):

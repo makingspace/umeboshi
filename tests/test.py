@@ -3,7 +3,8 @@ import logging
 from django.test import TestCase
 from django.utils import timezone
 
-from umeboshi import exceptions, scheduled
+from umeboshi import exceptions
+from umeboshi.scheduled import scheduled
 from umeboshi.models import Event, TriggerBehavior
 from umeboshi.routines import Routine
 

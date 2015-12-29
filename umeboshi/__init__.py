@@ -1,7 +1,5 @@
 # Make a couple frequently used things available right here.
-from umeboshi.models import Event, TriggerBehavior
-from umeboshi.routines import Routine
-from umeboshi.scheduled import scheduled
+default_app_config = 'umeboshi.apps.UmeboshiConfig'
 
 __all__ = ('Event', 'Routine', 'scheduled', 'TriggerBehavior')
 

@@ -49,7 +49,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "celery>=2.2.7",
-        "Django<=1.8.7",
+        "Django>=1.8",
         "django_extensions",
         "django_enumfield",
         "shortuuid",
