@@ -16,13 +16,13 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
-from django.utils.module_loading import import_string
 from django.utils.timezone import now, timedelta
 from django_enumfield import enum
 from django_extensions.db import fields
 from model_utils.managers import QueryManager
 
-from umeboshi.exceptions import RoutineRunException, RoutineRetryException, UnknownTriggerException
+from umeboshi.exceptions import RoutineRunException, RoutineRetryException
+from umeboshi.triggers import TriggerBehavior
 
 
 class BaseModel(models.Model):
@@ -143,25 +143,25 @@ class Event(BaseModel):
         """
         When an Event's scheduled datetime comes up, it will be processed.
         """
+        from umeboshi.runner import runner
         try:
             # The class is retrieved according to the trigger name.
-            routine_class = self.get_routine_class()
+            routine_class = runner.get_routine_class(self.trigger_name)
             # The routine is then instantiated with the unmarshaled data that
             # had been saved with the Event.
             routine = routine_class(*self.args)
-            routine.event = self
             # Before running the Routine, the Event will run the Routine's
             # validity check. This allows the Routine to specify conditions
             # that must be met at runtime (as opposed to when the Event is
             # scheduled) for the Routine to be run.
-            if not routine.check_validity():
+            if not runner.check_validity(routine):
                 self.status = self.Status.CANCELLED
             else:
                 # If the routine is still valid, it will be run and the Event
                 # will be marked `SUCCESSFUL`.
-                routine._run()
+                runner.run(routine)
                 self.status = self.Status.SUCCESSFUL
-            if routine.behavior == TriggerBehavior.DELETE_AFTER_PROCESSING:
+            if routine_class.behavior == TriggerBehavior.DELETE_AFTER_PROCESSING:
                 self.delete()
         except RoutineRunException:
             self.status = self.Status.FAILED
@@ -178,17 +178,6 @@ class Event(BaseModel):
             if self.pk:
                 self.datetime_processed = timezone.now()
                 self.save()
-
-    def get_routine_class(self):
-        """
-        The `scheduled` decorator registers all imported Routines. The
-        class is then retrieved when the event is ready for processing.
-        """
-        from umeboshi.routines import routine_register
-        if self.trigger_name in routine_register:
-            return import_string(routine_register[self.trigger_name])
-
-        raise UnknownTriggerException()
 
     def retry_schedule(self, new_datetime=now() + timedelta(hours=1)):
         if self.status in (self.Status.SUCCESSFUL, self.Status.CREATED):
@@ -214,28 +203,3 @@ class Event(BaseModel):
 
     def __unicode__(self):
         return 'Umeboshi Event #{}'.format(self.pk)
-
-
-class TriggerBehavior(enum.Enum):
-
-    """
-    Trigger Behaviors govern when to allow an Event to be scheduled.
-    """
-    # Delete event after processing
-    DELETE_AFTER_PROCESSING = 0
-
-    DEFAULT = 10
-
-    # Disallow if there is already an event with this name/data waiting to be
-    # processed.
-    SCHEDULE_ONCE = 20
-
-    # Disallow if an event with this name/data has run successfully.
-    RUN_ONCE = 30
-
-    # Disallow if an event with this name/data has run successfully, or is
-    # scheduled to run.
-    RUN_AND_SCHEDULE_ONCE = 40
-
-    # Cancel any waiting events and schedule this one instead.
-    LAST_ONLY = 50

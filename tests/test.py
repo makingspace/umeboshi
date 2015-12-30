@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from umeboshi import exceptions
 from umeboshi.models import Event, TriggerBehavior
-from umeboshi.routines import scheduled
+from umeboshi.routines import routine
 
 
 class BaseRoutine(object):
@@ -22,14 +22,14 @@ class BaseRoutine(object):
 TRIGGER_SIMPLE = 'simple-model'
 
 
-@scheduled()
+@routine()
 class SimpleRoutine(BaseRoutine):
     trigger_name = TRIGGER_SIMPLE
 
 TRIGGER_RUN_ONCE = 'send_once'
 
 
-@scheduled()
+@routine()
 class SendOnceRoutine(BaseRoutine):
     trigger_name = TRIGGER_RUN_ONCE
     behavior = TriggerBehavior.RUN_ONCE
@@ -37,7 +37,7 @@ class SendOnceRoutine(BaseRoutine):
 SCHEDULE_ONCE = 'trigger_once'
 
 
-@scheduled()
+@routine()
 class TriggerOnceRoutine(BaseRoutine):
     trigger_name = SCHEDULE_ONCE
     behavior = TriggerBehavior.SCHEDULE_ONCE
@@ -45,7 +45,7 @@ class TriggerOnceRoutine(BaseRoutine):
 RUN_AND_SCHEDULE_ONCE = 'run_and_schedule_once'
 
 
-@scheduled()
+@routine()
 class RunAndScheduleOnceRoutine(BaseRoutine):
     trigger_name = RUN_AND_SCHEDULE_ONCE
     behavior = TriggerBehavior.RUN_AND_SCHEDULE_ONCE
@@ -53,10 +53,15 @@ class RunAndScheduleOnceRoutine(BaseRoutine):
 TRIGGER_DELETE_AFTER_PROCESSING = 'trigger_delete_after'
 
 
-@scheduled()
+@routine()
 class TriggerDeleteAfterRoutine(BaseRoutine):
     trigger_name = TRIGGER_DELETE_AFTER_PROCESSING
     behavior = TriggerBehavior.DELETE_AFTER_PROCESSING
+
+
+@routine(trigger_name="base-trigger")
+class BaseRoutine(object):
+    pass
 
 
 class ModelTests(TestCase):
@@ -173,3 +178,15 @@ class ModelTests(TestCase):
 
             second_event = Event.objects.get(pk=second_event.id)
             self.assertEqual(second_event.status, Event.Status.CREATED)
+
+    def test_base_trigger(self):
+        self.assertEquals(BaseRoutine.trigger_name, "base-trigger")
+        self.assertIsNone(BaseRoutine.task_group)
+        self.assertIsNone(BaseRoutine.behavior)
+
+        event = BaseRoutine.schedule()
+        with self.assertRaises(NotImplementedError):
+            event.process()
+
+        BaseRoutine.run = lambda self: None
+        event.process()
