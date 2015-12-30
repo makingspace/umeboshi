@@ -159,7 +159,7 @@ class Event(BaseModel):
             else:
                 # If the routine is still valid, it will be run and the Event
                 # will be marked `SUCCESSFUL`.
-                routine.run()
+                routine._run()
                 self.status = self.Status.SUCCESSFUL
             if routine.behavior == TriggerBehavior.DELETE_AFTER_PROCESSING:
                 self.delete()
@@ -181,12 +181,12 @@ class Event(BaseModel):
 
     def get_routine_class(self):
         """
-        The `scheduled` decorator registers all imported Routine classes. The
+        The `scheduled` decorator registers all imported Routines. The
         class is then retrieved when the event is ready for processing.
         """
-        from umeboshi.scheduled import register
-        if self.trigger_name in register:
-            return import_string(register[self.trigger_name])
+        from umeboshi.routines import routine_register
+        if self.trigger_name in routine_register:
+            return import_string(routine_register[self.trigger_name])
 
         raise UnknownTriggerException()
 

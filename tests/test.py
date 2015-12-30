@@ -4,12 +4,11 @@ from django.test import TestCase
 from django.utils import timezone
 
 from umeboshi import exceptions
-from umeboshi.scheduled import scheduled
 from umeboshi.models import Event, TriggerBehavior
-from umeboshi.routines import Routine
+from umeboshi.routines import scheduled
 
 
-class BaseRoutine(Routine):
+class BaseRoutine(object):
 
     def __init__(self, args=None):
         self.data = args

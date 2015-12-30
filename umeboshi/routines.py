@@ -6,6 +6,9 @@ from django.utils import timezone
 from umeboshi.exceptions import RoutineRunException, DuplicateEvent
 from umeboshi.models import Event, TriggerBehavior
 
+logger = logging.getLogger('django-umeboshi')
+routine_register = {}
+
 
 class Routine(object):
 
@@ -16,9 +19,10 @@ class Routine(object):
     trigger_name = None
     task_group = None
     behavior = None
+    UMEBOSHI_FIELDS = ('trigger_name', 'task_group', 'behavior')
 
     @classmethod
-    def schedule(cls, datetime_scheduled=None, args=None, silent=True):
+    def schedule(cls, datetime_scheduled=None, args=None, silent=True, **kwargs):
         """
         Schedule a Routine class to be run in the future.
         """
@@ -85,9 +89,41 @@ class Routine(object):
         """
         return True
 
-    def run(self):
+    def _run(self):
         try:
-            return self._run()
+            return self.run()
         except Exception as e:
-            logging.getLogger('django-umeboshi').exception(e)
+            logger.exception(e)
             raise RoutineRunException()
+
+
+def scheduled(trigger_name=None, task_group=None, behavior=None):
+    """
+    Routines are declared with the `scheduled` decorator, which takes care of
+    registering the Routine class with Umeboshi.
+    """
+    def wrapper(cls):
+        # The decorator inserts Routine as a superclass of `cls`, providing
+        # access to the Routine API:
+        # - schedule()
+        # - check_validity()
+        # - run()
+        if Routine not in cls.__bases__:
+            cls.__bases__ = (Routine,) + cls.__bases__
+
+        if trigger_name is not None:
+            cls.trigger_name = trigger_name
+        if task_group is not None:
+            cls.task_group = task_group
+        if behavior is not None:
+            cls.behavior = behavior
+
+        if cls.trigger_name in routine_register:
+            logger.warning('Duplicate definition for trigger {} at {} and {}.{}',
+                           cls.trigger_name, routine_register[cls.trigger_name],
+                           cls.__module__, cls.__name__)
+
+        routine_register[cls.trigger_name] = "{}.{}".format(cls.__module__, cls.__name__)
+        return cls
+
+    return wrapper
