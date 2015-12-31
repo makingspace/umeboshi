@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('datetime_created', models.DateTimeField(auto_now_add=True, null=True)),
                 ('datetime_scheduled', models.DateTimeField(db_index=True)),
                 ('datetime_processed', models.DateTimeField(null=True, db_index=True)),
-                ('status', models.IntegerField(default=-3, db_index=True)),
+                ('status', models.IntegerField(default=0, db_index=True)),
             ],
         ),
         migrations.AlterIndexTogether(
