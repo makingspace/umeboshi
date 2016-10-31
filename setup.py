@@ -50,7 +50,7 @@ setup(
         "celery>=2.2.7",
         "Django>=1.8",
         "django_extensions",
-        "django_enumfield",
+        "django-light-enums",
         "shortuuid",
         "django-model-utils"
     ],

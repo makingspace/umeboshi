@@ -29,7 +29,7 @@ def schedule(cls, datetime_scheduled=None, args=None, silent=True, **kwargs):
     # existence of any of a group of Routines.
     group_check = {"task_group": cls.task_group} if cls.task_group is not None \
         else {"trigger_name": cls.trigger_name}
-    behavior = cls.behavior if cls.behavior in TriggerBehavior.values.keys() else TriggerBehavior.DEFAULT
+    behavior = cls.behavior if TriggerBehavior.is_valid_value(cls.behavior) else TriggerBehavior.DEFAULT
 
     try:
         if behavior == TriggerBehavior.RUN_AND_SCHEDULE_ONCE \
