@@ -17,7 +17,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.timezone import now, timedelta
-from django_enumfield import enum
+from django_light_enums import enum
 from django_extensions.db import fields
 from model_utils.managers import QueryManager
 

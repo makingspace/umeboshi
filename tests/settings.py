@@ -27,7 +27,6 @@ MIDDLEWARE_CLASSES = ()
 INSTALLED_APPS = ('django.contrib.auth',
                   'django.contrib.contenttypes',
                   'umeboshi',
-                  'test'
 )
 
 USE_TZ = True

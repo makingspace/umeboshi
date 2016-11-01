@@ -1,4 +1,4 @@
-from django_enumfield import enum
+from django_light_enums import enum
 
 
 class TriggerBehavior(enum.Enum):
