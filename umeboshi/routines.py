@@ -3,7 +3,6 @@ import logging
 
 from django.utils import timezone
 from umeboshi.exceptions import DuplicateEvent
-from umeboshi.models import Event
 from umeboshi.triggers import TriggerBehavior
 
 
@@ -15,6 +14,7 @@ def schedule(cls, datetime_scheduled=None, args=None, silent=True, **kwargs):
     """
     Schedule a Routine class to be run in the future.
     """
+    from umeboshi.models import Event
     if args is None:
         args = []
     marshaled_data = Event.marshal_data(args)
