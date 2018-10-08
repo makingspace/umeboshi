@@ -18,7 +18,7 @@ class Runner(object):
 
         if cls.trigger_name in self.registry:
             self.logger.warning('Duplicate definition for trigger {} at {}.{} and {}.{}',
-                                cls.trigger_name, self.register[cls.__module__, cls.trigger_name],
+                                cls.trigger_name, self.registry[cls.__module__, cls.trigger_name],
                                 cls.__module__, cls.__name__)
         self.registry[cls.trigger_name] = "{}.{}".format(cls.__module__, cls.__name__)
 
