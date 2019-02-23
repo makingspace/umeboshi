@@ -13,7 +13,11 @@ import hashlib
 import pickle
 
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
+
 from django.db import models
 from django.utils import timezone
 from django.utils.timezone import now, timedelta
