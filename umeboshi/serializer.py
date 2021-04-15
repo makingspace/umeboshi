@@ -31,6 +31,6 @@ def load_class(path):
 
 
 if hasattr(settings, 'UMEBOSHI_SERIALIZER'):
-    serializer = load_class(settings.UMEBOSHI_SERIALIZER)
+    serializer = load_class(settings.UMEBOSHI_SERIALIZER)()
 else:
-    serializer = DefaultSerializer
+    serializer = DefaultSerializer()
