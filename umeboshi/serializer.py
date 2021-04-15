@@ -28,8 +28,16 @@ def load_class(path):
     except AttributeError:
         raise ImproperlyConfigured('Module "{0}" does not define a "{1}" class'.format(mod_name, klass_name))
 
+    if not hasattr(klass, "loads"):
+        raise ImproperlyConfigured('Class "{0}" does not define "loads" method'.format(klass_name))
+
+    if not hasattr(klass, "dumps"):
+        raise ImproperlyConfigured('Class "{0}" does not define "dumps" method'.format(klass_name))
+
     return klass
 
+
+serializer = None
 
 if hasattr(settings, 'UMEBOSHI_SERIALIZER'):
     serializer = load_class(settings.UMEBOSHI_SERIALIZER)()
