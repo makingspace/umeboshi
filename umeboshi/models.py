@@ -11,6 +11,7 @@ after the computation is processed, the status of the computation.
 """
 import hashlib
 import pickle
+from importlib import import_module
 
 from django.core.exceptions import ValidationError
 try:
@@ -132,7 +133,8 @@ class Event(BaseModel):
         """
         if not hasattr(self, '_data'):
             self._data = [] if self.has_data \
-                else self.unmarshal_data(self.data_pickled)
+                else self.unmarshal_data(self.data
+                s_pickled)
         return self._data
 
     @args.setter
