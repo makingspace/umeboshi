@@ -10,8 +10,6 @@ Routine's `_run` function and the details of its scheduling. This includes,
 after the computation is processed, the status of the computation.
 """
 import hashlib
-import pickle
-from importlib import import_module
 
 from django.core.exceptions import ValidationError
 try:
@@ -113,11 +111,11 @@ class Event(BaseModel):
         """
         Events use `pickle` to marshal their argument data for storage.
         """
-        return pickle.dumps(data)
+        return serializer.dumps(data)
 
     @staticmethod
     def unmarshal_data(data):
-        return pickle.loads(data)
+        return serializer.loads(data)
 
     @staticmethod
     def hash_data(data):
@@ -133,8 +131,7 @@ class Event(BaseModel):
         """
         if not hasattr(self, '_data'):
             self._data = [] if self.has_data \
-                else self.unmarshal_data(self.data
-                s_pickled)
+                else self.unmarshal_data(self.data_pickled)
         return self._data
 
     @args.setter
