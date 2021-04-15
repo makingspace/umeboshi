@@ -26,6 +26,7 @@ from model_utils.managers import QueryManager
 
 from umeboshi.exceptions import RoutineRunException, RoutineRetryException
 from umeboshi.triggers import TriggerBehavior
+from umeboshi.serializer import serializer
 
 
 class BaseModel(models.Model):
