@@ -1,5 +1,6 @@
 import pickle
 from importlib import import_module
+from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
 class DefaultSerializer(object):
