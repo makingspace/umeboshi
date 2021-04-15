@@ -87,6 +87,30 @@ days thence that Event will be processed.
 - Routine scheduling behaviors allow rules like run-once, schedule-once, last-only (cancel any existing Events when one is scheduled)
 - Task groups allow scheduling behavior to be applied to multiple Routines within a group
 
+# Config
+`UMEBOSHI_SERIALIZER`: Path to custom data serializer 
+
+Example:
+```
+# In Django setting file
+
+UMEBOSHI_SERIALIZER = "example.path.serializer.CustomSerializer"
+```
+
+Create custom serializer class. Serializer must contains `dumps` and `loads` methods
+```
+# project/example/path/serializer.py
+
+import pickle
+
+class CustomSerializer(object):
+    def dumps(self, value):
+        return pickle.dumps(value, 2)
+
+    def loads(self, value):
+        return pickle.loads(value, fix_imports=True, encoding="latin1")
+```
+
 # How to install
 
 Install:
