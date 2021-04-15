@@ -29,7 +29,7 @@ def load_class(path):
 
     return klass
 
-# serializer_path = settings.get('UMEBOSHI_SERIALIZER', None)
+
 if hasattr(settings, 'UMEBOSHI_SERIALIZER'):
     serializer = load_class(settings.UMEBOSHI_SERIALIZER)
 else:
