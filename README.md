@@ -87,8 +87,8 @@ days thence that Event will be processed.
 - Routine scheduling behaviors allow rules like run-once, schedule-once, last-only (cancel any existing Events when one is scheduled)
 - Task groups allow scheduling behavior to be applied to multiple Routines within a group
 
-# Config
-`UMEBOSHI_SERIALIZER`: Path to custom data serializer 
+# Advanced Config
+`UMEBOSHI_SERIALIZER` (Optional): Path to custom data serializer. Default Pickle serializer will be applied if it's not speficied.
 
 Example:
 ```
