@@ -15,13 +15,13 @@ lock_key = 'umeboshi-event-{}'
 
 
 @contextlib.contextmanager
-def simple_lock(lock_key, timeout=5000):
+def simple_lock(lock_key, timeout=5000, redis_timeout_sec=5):
     """
     A simple context manager that raises the passed exception
     if a lock can't be acquired.
     """
 
-    acquire_lock = lambda: cache.add(lock_key, 1, timeout)
+    acquire_lock = lambda: cache.add(lock_key, 1, redis_timeout_sec)
     release_lock = lambda: cache.delete(lock_key)
 
     waited, hops = 0, 10
