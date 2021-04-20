@@ -39,7 +39,7 @@ class RunTests(Command):
         pass
 setup(
     name="django-umeboshi",
-    version="0.4.4",
+    version="0.4.5",
     author="MakeSpace Labs, Inc.",
     author_email="zach.smith@makespace.com",
     description="Umeboshi is a Django application for durable long-term scheduling of arbitrary actions.",
