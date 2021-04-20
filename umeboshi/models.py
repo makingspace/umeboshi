@@ -10,7 +10,6 @@ Routine's `_run` function and the details of its scheduling. This includes,
 after the computation is processed, the status of the computation.
 """
 import hashlib
-import pickle
 
 from django.core.exceptions import ValidationError
 try:
@@ -27,6 +26,7 @@ from model_utils.managers import QueryManager
 
 from umeboshi.exceptions import RoutineRunException, RoutineRetryException
 from umeboshi.triggers import TriggerBehavior
+from umeboshi.serializer import serializer
 
 
 class BaseModel(models.Model):
@@ -112,11 +112,11 @@ class Event(BaseModel):
         """
         Events use `pickle` to marshal their argument data for storage.
         """
-        return pickle.dumps(data)
+        return serializer.dumps(data)
 
     @staticmethod
     def unmarshal_data(data):
-        return pickle.loads(data)
+        return serializer.loads(data)
 
     @staticmethod
     def hash_data(data):

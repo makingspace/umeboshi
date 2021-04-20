@@ -2,11 +2,13 @@ import logging
 
 from django.test import TestCase
 from django.utils import timezone
+from django.core.exceptions import ImproperlyConfigured
+from django.conf import settings
 
 from umeboshi import exceptions
 from umeboshi.models import Event, TriggerBehavior
 from umeboshi.routines import routine
-
+from umeboshi.serializer import load_class, load_serializer
 
 class BaseRoutine(object):
 
@@ -190,3 +192,47 @@ class ModelTests(TestCase):
 
         BaseRoutine.run = lambda self: None
         event.process()
+
+
+class EmptySerializer(object):
+    """
+    Empty serializer with no loads and dumps method
+    """
+    pass
+
+class TestSerializer(object):
+    def dumps(self, value):
+        pass
+
+    def loads(self, value):
+        pass
+class SerializerTests(TestCase):
+    
+    def test_load_class(self):
+        path = 'umeboshi.serializer.DefaultSerializer'
+        klass = load_class(path)
+        self.assertIsNotNone(klass)
+        
+    def test_load_class_exception_invalid_file(self):
+        path = 'nonexist.serializer.DefaultSerializer'
+        self.assertRaises(ImportError, load_class, path)
+
+    def test_load_class_exception_invalid_class(self):
+        path = 'umeboshi.serializer.nonexist'
+        self.assertRaises(ImproperlyConfigured, load_class, path)
+
+    def test_load_class_exception_missing_method(self):
+        path = 'tests.test.EmptySerializer'
+        self.assertRaises(ImproperlyConfigured, load_class, path)
+
+    def test_load_serializer_default(self):
+        serializer = load_serializer({})
+        self.assertEqual(serializer.__class__.__name__, "DefaultSerializer")
+
+    def test_load_serializer_default(self):
+        class TestSetting(object):
+            UMEBOSHI_SERIALIZER = 'tests.test.TestSerializer'
+
+        test_setting = TestSetting()
+        serializer = load_serializer(test_setting)
+        self.assertEqual(serializer.__class__.__name__, "TestSerializer")
