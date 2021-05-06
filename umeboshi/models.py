@@ -183,7 +183,9 @@ class Event(BaseModel):
                 self.datetime_processed = timezone.now()
                 self.save()
 
-    def retry_schedule(self, new_datetime=now() + timedelta(hours=1)):
+    def retry_schedule(self, new_datetime=None):
+        if new_datetime is None:
+            new_datetime = now() + timedelta(hours=1)
         if self.status in (self.Status.SUCCESSFUL, self.Status.CREATED):
             raise ValidationError("Can only reschedule a failed event.")
         else:
