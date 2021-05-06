@@ -1,9 +1,12 @@
 import logging
 
+import mock
 from django.test import TestCase
 from django.utils import timezone
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
+from freezegun import freeze_time
+from django.utils.timezone import now, timedelta
 
 from umeboshi import exceptions
 from umeboshi.models import Event, TriggerBehavior
@@ -192,6 +195,24 @@ class ModelTests(TestCase):
 
         BaseRoutine.run = lambda self: None
         event.process()
+
+    @freeze_time("2012-01-14 13:13:13")
+    @mock.patch('umeboshi.models.Event.objects.create')
+    def test_event_retry_schedule_function_default_args(self, mock_event_create):
+        event = Event(status=Event.Status.FAILED)
+
+        reschedule_time = now() + timedelta(hours=1)
+        self.assertNotEqual(now(), reschedule_time)
+
+        event.retry_schedule()
+
+        mock_event_create.assert_called_once_with(
+            trigger_name=mock.ANY,
+            datetime_scheduled=reschedule_time,
+            status=Event.Status.CREATED,
+            args=mock.ANY,
+
+        )
 
 
 class EmptySerializer(object):
